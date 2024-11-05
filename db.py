@@ -2,14 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import DeclarativeBase
 
-
 engine = create_engine(url='postgresql://postgres:664053@localhost/lessons')
 
 
 class Base(DeclarativeBase):
     id: Mapped[int] = mapped_column(primary_key=True)
 
-class Users(Base):
+class User(Base):
     __tablename__ = "users"
 
     name: Mapped[str]

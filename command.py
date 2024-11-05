@@ -1,5 +1,4 @@
 from functions import add_user, get_user, order_users, list_users
-from shema import User
 
 print("Welcome to the database mini-application!")
 print("commands")
