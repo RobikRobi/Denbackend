@@ -1,15 +1,15 @@
 from sqlalchemy import select
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import Session
-from db import engine, User, Products
+from sqlalchemy.orm import sessionmaker, selectinload
+from db import engine, User, Products, Products_User
 from shema import UserPydantic, ProductPydantic
-import random
+# import random
 
-Sessiona = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine)
 
-session = Sessiona()
+session = Session()
 
-# def creat_user():
+# я использовал эту функция, чтобы создать список пользователей
+#  def creat_user():
 #     session.connection()
 
 #     for i in range(100):
@@ -50,6 +50,7 @@ def order_users():
         user_age = {'id': i[0], 'name': i[1], 'age': i[2]}
         print(user_age)
 
+# я использовал эту функцию, чтобы создать список товаров
 # def creat_product():
 #     session.connection()
 #     list_product = ["SmartTV", "PC", "Fridge", "Kettle", "Microwave", "Headphones", "Monitor"]
@@ -88,15 +89,29 @@ def update_product():
         return session.commit(), print(product_pydantic.model_dump()), print("Changes made11")
     return print("Product with this id was not found")
 
-def product_to_profiel():
-    user_id = int(input())
+# функция для добавлениия продукта в профиль пользователя
+def products_to_user():
+    user_id = int(input("Enter id user: "))
     product_id = int(input("Enter the id of the product you want to add: "))
-    user = session.scalar(select(User)).where(User.id == user_id)
+    user = session.scalar(select(User).where(User.id == user_id))
     products = session.scalar(select(Products).where(Products.id == product_id))
-    user.products.append(products)
+    user.product.append(products)
+    session.add(user)
     session.commit()
-    return print("Product added to profile")
+    return print(f"Product {product_id} added to profile user {user_id}")
+
+# функция для удаления продукта из профиля пользователя
+def remove_product():
+    user_id = int(input("Enter id user: "))
+    product_id = int(input("Enter the id of the product you want to remove: "))
+    products = session.scalar(select(Products).where(Products.id == product_id))
+    user = session.scalar(select(User).where(User.id == user_id).join(User.product).options(selectinload(User.product)))
+    user.product.remove(products)
+    session.commit()
+    return print(f"The product with {product_id} has been removed from the profile of the user with {user_id}")
 
 # update_product()
 # list_product()
-product_to_profiel()
+# products_to_user()
+# select_user()
+# remove_product()

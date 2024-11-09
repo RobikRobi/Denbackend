@@ -15,6 +15,8 @@ while switch == True:
     # 5 add product
     # 6 list product
     # 7 update product
+    # 8 add product to user
+    # 9 remove a product from a user
     # Enter the 'c' key to close the application 
     """)
     print("*"*50)
@@ -40,6 +42,12 @@ while switch == True:
 
     elif command == '7':
         update_product()
+
+    elif command == '8':
+        products_to_user()
+
+    elif command == '9':
+        remove_product()
 
     elif command == 'c':
         switch = False

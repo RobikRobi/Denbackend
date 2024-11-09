@@ -6,16 +6,21 @@ engine = create_engine(url='postgresql://postgres:664053@localhost/lessons')
 
 
 class Base(DeclarativeBase):
-    id: Mapped[int] = mapped_column(primary_key=True)
+    pass
+
 
 class User(Base):
     __tablename__ = "users"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     age: Mapped[int]
     email: Mapped[str] = mapped_column(unique=True)
 
-    producrs: Mapped[list["Products"]] = relationship(userlist=True, secondary="products_user", back_populates="user")
+    product: Mapped[list["Products"]] = relationship(
+            uselist=True, 
+            secondary="products_user",
+            back_populates="users")
 
 class Products(Base):
     __tablename__ = "products"
@@ -24,12 +29,17 @@ class Products(Base):
     name: Mapped[str]
     price: Mapped[float]
 
-    producrs: Mapped[list["User"]] = relationship(userlist=True, secondary="products_user", back_populates="products")
+    users: Mapped[list["User"]] = relationship(
+            uselist=True, 
+            secondary="products_user",
+            back_populates="product")
 
 class Products_User(Base):
     __tablename__ = "products_user"
 
-    User_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
-    Product_id: Mapped[int] = mapped_column(ForeignKey("product.id", ondelet="CASCADE"), primary_key=True)
+    User_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    Product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), primary_key=True)
+
+
 Base.metadata.create_all(engine)
 
